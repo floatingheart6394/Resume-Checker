@@ -7,33 +7,28 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <div class="left">
-      <h2>Resume</h2>
 
-      <label>Upload resume</label>
-      <input type="file" id="resume" accept=".pdf,.docx,.txt" />
+<div class="single-container">
+    <h2>Resume Checker</h2>
 
-      <p class="or">— or —</p>
+    <label>Upload Resume:</label>
+    <input type="file" id="resume" accept=".pdf,.docx,.txt" />
 
-      <label>Paste resume text</label>
-      <textarea id="resumeText" rows="8" placeholder="Paste your resume..."></textarea>
+    <p class="or">— or —</p>
 
-      <label>Job description</label>
-      <textarea id="jobDesc" rows="6" placeholder="Paste job description..."></textarea>
+    <label>Paste Resume Text:</label>
+    <textarea id="resumeText" rows="6"></textarea>
 
-      <div class="row">
-        <button id="analyzeBtn">Analyze</button>
-      </div>
+    <label>Job Description:</label>
+    <textarea id="jobDesc" rows="5"></textarea>
+
+    <button id="analyzeBtn">Analyze</button>
+
+    <div id="resultPane" class="result-box">
+        <p class="placeholder">Results will appear here.</p>
     </div>
+</div>
 
-    <div class="right" id="resultPane">
-      <div class="placeholder">
-        <p>Results will appear here</p>
-      </div>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

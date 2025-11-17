@@ -5,7 +5,7 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
   const resultPane = document.getElementById("resultPane");
 
   if (!jobDesc) {
-    resultPane.innerHTML = "<p class='placeholder'>Please provide job description.</p>";
+    resultPane.innerHTML = "<p class='placeholder'>Please enter job description.</p>";
     return;
   }
 
@@ -14,7 +14,7 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
   try {
     let response;
 
-    // FILE MODE
+    // If file uploaded
     if (fileInput.files.length > 0) {
       const formData = new FormData();
       formData.append("file", fileInput.files[0]);
@@ -26,7 +26,7 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
       });
     }
 
-    // TEXT MODE
+    // If text pasted
     else if (resumeText.length > 0) {
       response = await fetch("http://127.0.0.1:8000/analyze/text", {
         method: "POST",
@@ -39,71 +39,50 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
     }
 
     else {
-      resultPane.innerHTML = "<p class='placeholder'>Upload or paste your resume first.</p>";
+      resultPane.innerHTML = "<p class='placeholder'>Upload or paste resume text.</p>";
       return;
     }
 
     const data = await response.json();
+
     if (data.error) {
-      resultPane.innerHTML = `<p class='placeholder'>Error: ${data.error}</p>`;
+      resultPane.innerHTML = `<p class="placeholder">❌ ${data.error}</p>`;
       return;
     }
 
-    // ---------- BUILD UI ----------
-    const match = data.overall_match ?? 0;
-    const domain = data.predicted_domain ?? "Unknown";
-    const topKeywords = data.top_keywords || [];
-    const missingKeywords = data.missing_keywords || [];
-    const bar = data.bar_chart;
-    const pie = data.pie_chart;
-
-    // ---------- GENERATE SUMMARY ----------
-    const summary = `
-      <div class="summary-box">
-        <h4>Summary</h4>
-        <p>Your resume matches <strong>${match}%</strong> of the job description. 
-        The system predicts that your profile is mostly aligned with 
-        <strong>${domain}</strong>. You can improve your resume by adding 
-        missing important skills from the job description and strengthening
-        the areas where the match percentage is low. Overall, this gives you a 
-        clear direction on how to refine your resume for this job role.</p>
-      </div>
-    `;
-
-    // ---------- FINAL HTML ----------
+    // Build output UI
     const html = `
-      <div class="result-block">
-        <h3>Match Score: <span style="color:#007bff">${match}%</span></h3>
-        <p><strong>Predicted Domain:</strong> ${domain}</p>
+      <h3>Match Score: <span style="color:#0b74ff">${data.overall_match}%</span></h3>
+
+      <div class="line">
+        <strong>Predicted Domain:</strong> ${data.predicted_domain}
       </div>
 
-      <div class="keywords-block">
-        <h4>Top Matched Keywords</h4>
-        <ul>${topKeywords.map(k => `<li>${k}</li>`).join("")}</ul>
+      <h4>Top Matched Keywords</h4>
+      <ul>${data.top_keywords.map(k => `<li>${k}</li>`).join("")}</ul>
 
-        <h4>Missing Important Keywords</h4>
-        <ul>${missingKeywords.map(k => `<li>${k}</li>`).join("")}</ul>
-      </div>
+      <h4>Missing Keywords</h4>
+      <ul>${data.missing_keywords.map(k => `<li>${k}</li>`).join("")}</ul>
 
-      <div class="charts">
-        <div class="chart-box">
-          <h4>Relevant Domain Match</h4>
-          <img src="data:image/png;base64,${bar}" style="max-width:100%">
-        </div>
+      <h4>Relevant Domain Comparison</h4>
+      <img class="chart" src="data:image/png;base64,${data.bar_chart}" />
 
-        <div class="chart-box">
-          <h4>Overall Resume vs Job Match</h4>
-          <img src="data:image/png;base64,${pie}" style="max-width:100%">
-        </div>
-      </div>
+      <h4>Overall Match Chart</h4>
+      <img class="chart" src="data:image/png;base64,${data.pie_chart}" />
 
-      ${summary}
+      <h4>Summary</h4>
+      <p class="summary">
+        Your resume matches about <strong>${data.overall_match}%</strong> of the job description.
+        The predicted domain is <strong>${data.predicted_domain}</strong>. Boost your resume by
+        adding the missing keywords listed above. The charts show how closely your resume aligns
+        with relevant domains and the overall match level.
+      </p>
     `;
 
     resultPane.innerHTML = html;
 
   } catch (err) {
     console.error(err);
-    resultPane.innerHTML = "<p class='placeholder'>❌ Error analyzing resume.</p>";
+    resultPane.innerHTML = "<p class='placeholder'>❌ Something went wrong.</p>";
   }
 });
