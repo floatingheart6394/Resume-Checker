@@ -12,3 +12,5 @@ __pycache__/
 # OS generated
 .DS_Store
 Thumbs.db
+
+ai_service/data/resumes/*.csv

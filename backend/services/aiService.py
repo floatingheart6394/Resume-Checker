@@ -1,3 +1,4 @@
+# backend/services/aiService.py
 import os
 import sys
 
@@ -10,9 +11,6 @@ from ai_service.model.recruiter_match import match_job_with_resumes
 
 def get_resume_matches(resume_text: str, job_description: str):
     try:
-        results = match_job_with_resumes(resume_text, job_description)
-        if isinstance(results, list):
-            return results[:10]
-        return results
+        return match_job_with_resumes(resume_text, job_description)
     except Exception as e:
         return {"error": str(e)}

@@ -1,32 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resume Checker</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Resume Checker — Candidate View</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div class="container">
+    <div class="left">
+      <h2>Resume</h2>
 
-<div class="container">
-    <h2>Resume Checker</h2>
+      <label>Upload resume</label>
+      <input type="file" id="resume" accept=".pdf,.docx,.txt" />
 
-    <label>Upload Resume:</label>
-    <input type="file" id="resume" accept=".pdf,.docx,.txt">
+      <p class="or">— or —</p>
 
-    <p class="or">— or —</p>
+      <label>Paste resume text</label>
+      <textarea id="resumeText" rows="8" placeholder="Paste your resume..."></textarea>
 
-    <label>Paste Resume Text:</label>
-    <textarea id="resumeText" rows="5"></textarea>
+      <label>Job description</label>
+      <textarea id="jobDesc" rows="6" placeholder="Paste job description..."></textarea>
 
-    <label>Job Description:</label>
-    <textarea id="jobDesc" rows="4"></textarea>
+      <div class="row">
+        <button id="analyzeBtn">Analyze</button>
+      </div>
+    </div>
 
-    <button type="button" onclick="analyzeResume()">Analyze</button>
+    <div class="right" id="resultPane">
+      <div class="placeholder">
+        <p>Results will appear here</p>
+      </div>
+    </div>
+  </div>
 
-    <div id="result"></div>
-</div>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
