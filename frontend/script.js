@@ -1,88 +1,138 @@
 document.getElementById("analyzeBtn").addEventListener("click", async () => {
+
+  const btn = document.getElementById("analyzeBtn");
+  const inputSection = document.getElementById("inputSection");
+  const resultSection = document.getElementById("resultSection");
+  const resultPane = document.getElementById("resultPane");
+
+  // Change button state
+  btn.innerText = "Analyzing... ⌛";
+  btn.classList.add("loading");
+  btn.disabled = true;
+
   const fileInput = document.getElementById("resume");
   const resumeText = document.getElementById("resumeText").value.trim();
   const jobDesc = document.getElementById("jobDesc").value.trim();
-  const resultPane = document.getElementById("resultPane");
 
+  // -------------------------------
+  // VALIDATION (DO NOT HIDE INPUT!)
+  // -------------------------------
+
+  // If job description is empty
   if (!jobDesc) {
-    resultPane.innerHTML = "<p class='placeholder'>Please enter job description.</p>";
-    return;
+
+      // Only show resultSection; DO NOT hide inputSection
+      resultSection.classList.remove("hidden");
+
+      resultPane.innerHTML = `
+          <div class="result-message">
+              ❗ Please enter a job description to continue.
+          </div>
+      `;
+
+      resetButton();
+      return;
   }
 
-  resultPane.innerHTML = "<p class='placeholder'>Analyzing... ⏳</p>";
+  // If both resume file & resume text are empty
+  if (fileInput.files.length === 0 && resumeText.length === 0) {
+
+      resultSection.classList.remove("hidden");
+
+      resultPane.innerHTML = `
+          <div class="result-message">
+              ❗ Please upload a resume or paste resume text.
+          </div>
+      `;
+
+      resetButton();
+      return;
+  }
+
+  // Show loading message
+  resultPane.innerHTML = "<p>Analyzing... ⏳</p>";
 
   try {
-    let response;
+      let response;
 
-    // If file uploaded
-    if (fileInput.files.length > 0) {
-      const formData = new FormData();
-      formData.append("file", fileInput.files[0]);
-      formData.append("job_description", jobDesc);
+      if (fileInput.files.length > 0) {
+          const formData = new FormData();
+          formData.append("file", fileInput.files[0]);
+          formData.append("job_description", jobDesc);
 
-      response = await fetch("http://127.0.0.1:8000/analyze/file", {
-        method: "POST",
-        body: formData
-      });
-    }
+          response = await fetch("http://127.0.0.1:8000/analyze/file", {
+              method: "POST",
+              body: formData
+          });
+      } 
+      else if (resumeText.length > 0) {
+          response = await fetch("http://127.0.0.1:8000/analyze/text", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                  resume_text: resumeText,
+                  job_description: jobDesc
+              })
+          });
+      }
 
-    // If text pasted
-    else if (resumeText.length > 0) {
-      response = await fetch("http://127.0.0.1:8000/analyze/text", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          resume_text: resumeText,
-          job_description: jobDesc
-        })
-      });
-    }
+      const data = await response.json();
 
-    else {
-      resultPane.innerHTML = "<p class='placeholder'>Upload or paste resume text.</p>";
-      return;
-    }
+      if (data.error) {
+          resultPane.innerHTML = `<p>${data.error}</p>`;
+          return;
+      }
 
-    const data = await response.json();
+      // --------------------------------------------------
+      // ONLY NOW: HIDE INPUT & SHOW OUTPUT
+      // --------------------------------------------------
+      inputSection.classList.add("hidden");
+      resultSection.classList.remove("hidden");
 
-    if (data.error) {
-      resultPane.innerHTML = `<p class="placeholder">❌ ${data.error}</p>`;
-      return;
-    }
+      // Output UI
+      resultPane.innerHTML = `
+        <h3 class="result-title">Resume Analysis Result</h3>
 
-    // Build output UI
-    const html = `
-      <h3>Match Score: <span style="color:#0b74ff">${data.overall_match}%</span></h3>
+        <div class="keyword-box">
+          <strong>Match Percentage:</strong> ${data.overall_match}% <br>
+          <strong>Predicted Domain:</strong> ${data.predicted_domain}
+        </div>
 
-      <div class="line">
-        <strong>Predicted Domain:</strong> ${data.predicted_domain}
-      </div>
+        <div class="keyword-box">
+          <strong>Top Matched Keywords:</strong>
+          <ul>${data.top_keywords.map(k => `<li>${k}</li>`).join("")}</ul>
+        </div>
 
-      <h4>Top Matched Keywords</h4>
-      <ul>${data.top_keywords.map(k => `<li>${k}</li>`).join("")}</ul>
+        <div class="missing-box">
+          <strong>Missing Important Keywords:</strong>
+          <ul>${data.missing_keywords.map(k => `<li>${k}</li>`).join("")}</ul>
+        </div>
 
-      <h4>Missing Keywords</h4>
-      <ul>${data.missing_keywords.map(k => `<li>${k}</li>`).join("")}</ul>
+        <div class="keyword-box">
+          <strong>Domain Match Chart</strong><br>
+          <img class="chart-img" src="data:image/png;base64,${data.bar_chart}" />
+        </div>
 
-      <h4>Relevant Domain Comparison</h4>
-      <img class="chart" src="data:image/png;base64,${data.bar_chart}" />
+        <div class="keyword-box">
+          <strong>Overall Match Chart</strong><br>
+          <img class="chart-img" src="data:image/png;base64,${data.pie_chart}" />
+        </div>
 
-      <h4>Overall Match Chart</h4>
-      <img class="chart" src="data:image/png;base64,${data.pie_chart}" />
-
-      <h4>Summary</h4>
-      <p class="summary">
-        Your resume matches about <strong>${data.overall_match}%</strong> of the job description.
-        The predicted domain is <strong>${data.predicted_domain}</strong>. Boost your resume by
-        adding the missing keywords listed above. The charts show how closely your resume aligns
-        with relevant domains and the overall match level.
-      </p>
-    `;
-
-    resultPane.innerHTML = html;
+        <div class="summary-box">
+          <strong>Summary:</strong>
+          <p>${data.summary}</p>
+        </div>
+      `;
 
   } catch (err) {
-    console.error(err);
-    resultPane.innerHTML = "<p class='placeholder'>❌ Something went wrong.</p>";
+      console.error(err);
+      resultPane.innerHTML = "<p>❌ Something went wrong.</p>";
+  }
+
+  function resetButton() {
+      const btn = document.getElementById("analyzeBtn");
+      btn.innerText = "Analyze";
+      btn.classList.remove("loading");
+      btn.disabled = false;
   }
 });

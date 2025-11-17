@@ -7,28 +7,27 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-<div class="single-container">
+  <div id="inputSection" class="card">
     <h2>Resume Checker</h2>
 
-    <label>Upload Resume:</label>
+    <label>Upload Resume</label>
     <input type="file" id="resume" accept=".pdf,.docx,.txt" />
 
     <p class="or">— or —</p>
 
-    <label>Paste Resume Text:</label>
-    <textarea id="resumeText" rows="6"></textarea>
+    <label>Paste Resume Text</label>
+    <textarea id="resumeText" rows="7"></textarea>
 
-    <label>Job Description:</label>
+    <label>Job Description</label>
     <textarea id="jobDesc" rows="5"></textarea>
 
     <button id="analyzeBtn">Analyze</button>
+  </div>
 
-    <div id="resultPane" class="result-box">
-        <p class="placeholder">Results will appear here.</p>
-    </div>
-</div>
+  <div id="resultSection" class="card hidden">
+    <div id="resultPane"></div>
+  </div>
 
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
