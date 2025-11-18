@@ -1,9 +1,7 @@
-# backend/routes/resumeRoutes.py
 from fastapi import APIRouter, UploadFile, File, Form, Request
 from fastapi.responses import JSONResponse
 from backend.services.aiService import get_resume_matches
 
-# imports for file extraction area are already present in your version if you used them earlier
 router = APIRouter()
 
 @router.post("/analyze/text")
@@ -26,7 +24,6 @@ async def analyze_text(request: Request):
 async def analyze_file(file: UploadFile = File(...), job_description: str = Form(...)):
     try:
         content = await file.read()
-        # call your extract_text_from_bytes helper if present; else decode
         try:
             resume_text = content.decode("utf-8", errors="ignore")
         except Exception:

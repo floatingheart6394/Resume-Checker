@@ -14,10 +14,6 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
   const resumeText = document.getElementById("resumeText").value.trim();
   const jobDesc = document.getElementById("jobDesc").value.trim();
 
-  // -------------------------------
-  // VALIDATION (DO NOT HIDE INPUT!)
-  // -------------------------------
-
   // If job description is empty
   if (!jobDesc) {
 
@@ -83,9 +79,6 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
           return;
       }
 
-      // --------------------------------------------------
-      // ONLY NOW: HIDE INPUT & SHOW OUTPUT
-      // --------------------------------------------------
       inputSection.classList.add("hidden");
       resultSection.classList.remove("hidden");
 

@@ -4,7 +4,7 @@ from backend.routes.resumeRoutes import router as resume_router
 
 app = FastAPI(title="Resume Checker API")
 
-# 🔥 Allow frontend to call backend (CORS FIX)
+# Allow frontend to call backend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],   # allow all origins

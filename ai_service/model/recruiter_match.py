@@ -1,4 +1,3 @@
-# ai_service/model/recruiter_match.py
 import os
 import joblib
 import numpy as np
