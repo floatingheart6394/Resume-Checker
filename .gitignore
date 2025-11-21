@@ -14,3 +14,4 @@ __pycache__/
 Thumbs.db
 
 ai_service/data/resumes/*.csv
+.env
