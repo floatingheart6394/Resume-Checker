@@ -1,17 +1,54 @@
+/* BODY — FIXED VERSION */
 body {
   margin: 0;
+  padding: 0;
   font-family: 'Segoe UI', Tahoma, sans-serif;
   background: linear-gradient(135deg, #a8c0ff, #3f2b96);
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
+
+  /* THE ONLY padding needed */
+  padding-top: 90px;   /* Push content below header */
+  padding-left: 20px;
+  padding-right: 20px;
+
   color: #333;
+  display: block !important;
 }
 
-/* Main Container */
-/* Center card */
+/* HEADER BAR */
+.header-bar {
+  width: 100%;
+  background: white;
+  padding: 14px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 200;
+}
+
+.header-text {
+  font-size: 20px;
+  font-weight: 600;
+  color: #3f2ca3;
+}
+
+.header-logout {
+  background: #4a28d1;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.header-logout:hover {
+  opacity: 0.85;
+}
+
+/* CARD */
 .card {
   width: 420px;
   background: #ffffff;
@@ -19,25 +56,7 @@ body {
   box-shadow: 0 10px 25px rgba(0,0,0,0.15);
   padding: 22px 28px;
   animation: fadeIn 0.6s ease-in-out;
-  margin: auto;
-}
-
-#inputSection textarea {
-  height: 90px;
-}
-
-#inputSection textarea#resumeText {
-  height: 120px;
-}
-
-/* Center vertically */
-body {
-  margin: 0;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(135deg, #a8c0ff, #3f2b96);
+  margin: 40px auto;
 }
 
 .hidden { display: none; }
@@ -48,21 +67,6 @@ body {
   font-weight: 600;
   color: #5e46d8;
   letter-spacing: 1px;
-}
-
-/* Button loading style */
-#analyzeBtn.loading {
-  background: #6c55d5 !important;
-  cursor: not-allowed;
-}
-
-/* Title */
-h2 {
-  text-align: center;
-  color: #3f2b96;
-  margin-bottom: 20px;
-  font-size: 26px;
-  font-weight: 700;
 }
 
 /* Inputs */
@@ -83,25 +87,14 @@ textarea {
   background: #fafafa;
   font-size: 15px;
   transition: border 0.3s ease;
-  box-sizing: border-box;   /* This is the fix */
+  box-sizing: border-box;
 }
 
-
-input[type="file"]:hover,
-textarea:focus {
+textarea:focus,
+input[type="file"]:hover {
   border-color: #3f2b96;
 }
 
-textarea:focus {
-  border-color: #3f2b96 !important;
-  outline: none; 
-}
-
-textarea:hover {
-  border-color: #3f2b96;
-}
-
-/* Button */
 #analyzeBtn {
   width: 100%;
   background: #3f2b96;
@@ -117,21 +110,11 @@ textarea:hover {
 }
 
 #analyzeBtn:hover {
-  background: #6a4bd9;;
+  background: #6a4bd9;
   transform: scale(1.02);
 }
 
-/* Result section */
-#resultPane {
-  margin-top: 30px;
-  padding: 20px;
-  background: #f3f5ff;
-  border-radius: 15px;
-  border-left: 6px solid #3f2b96;
-  min-height: 150px;
-  box-shadow: inset 0 0 10px rgba(63, 43, 150, 0.1);
-}
-
+/* RESULT CARD */
 #resultSection {
   width: 85vw;
   max-width: 1100px;
@@ -140,57 +123,23 @@ textarea:hover {
   padding: 30px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.18);
   animation: fadeIn 0.6s ease-in-out;
-  margin: auto;
-}
-
-.result-message {
-  text-align: center;
-  padding: 20px;
-  border-radius: 12px;
-  background: #faf6ff;
-  border-left: 5px solid #6a4bd9;
-  width: 70%;
   margin: 40px auto;
-  font-size: 16px;
-  font-weight: 600;
-  color: #3f2b96;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+#resultPane {
+  margin-top: 30px;
+  padding: 20px;
+  background: #f3f5ff;
+  border-radius: 15px;
+  border-left: 6px solid #3f2b96;
+  box-shadow: inset 0 0 10px rgba(63, 43, 150, 0.1);
+}
+
+.header-logout {
+  margin-right: 40px;   /* Move slightly to the left */
 }
 
 
-.result-title {
-  font-size: 20px;
-  font-weight: 700;
-  color: #3f2b96;
-}
-
-.keyword-box,
-.missing-box,
-.summary-box {
-  background: #fff;
-  padding: 15px;
-  margin-top: 12px;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-  border-left: 5px solid #6a4bd9;
-}
-
-.keyword-box ul,
-.missing-box ul {
-  margin: 0;
-  padding-left: 20px;
-}
-
-.chart-img {
-  max-width: 100%;
-  margin-top: 15px;
-  background: white;
-  padding: 10px;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-/* Fade animation */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Register — Resume Checker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="card">
+    <h2>Create Account</h2>
+
+    <label>Full Name (optional)</label>
+    <input id="fullName" />
+
+    <label>Email</label>
+    <input id="email" type="email" />
+
+    <label>Password</label>
+    <input id="password" type="password" />
+
+    <button id="registerBtn">Register</button>
+
+    <p style="text-align:center;margin-top:12px">
+      Already have account? <a href="login.html">Login</a>
+    </p>
+    <p id="msg" style="text-align:center;color:#a00;font-weight:600"></p>
+  </div>
+
+  <script>
+    const API = "http://127.0.0.1:8000/auth";
+    document.getElementById("registerBtn").addEventListener("click", async () => {
+      const fullName = document.getElementById("fullName").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const msg = document.getElementById("msg");
+      msg.textContent = "";
+      if (!email || !password) { msg.textContent = "Please enter email and password"; return; }
+      document.getElementById("registerBtn").innerText = "Registering...";
+      try {
+        const res = await fetch(API + "/register", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({email, password, full_name: fullName})
+        });
+        const data = await res.json();
+        if (res.ok) {
+          msg.style.color = "green";
+          msg.textContent = "Registered — redirecting to login...";
+          setTimeout(()=> window.location.href = "login.html", 1200);
+        } else {
+          msg.style.color = "#a00";
+          msg.textContent = data.detail || data.msg || JSON.stringify(data);
+        }
+      } catch(e) {
+        msg.textContent = "Network error";
+      } finally {
+        document.getElementById("registerBtn").innerText = "Register";
+      }
+    });
+  </script>
+</body>
+</html>

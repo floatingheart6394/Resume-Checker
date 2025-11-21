@@ -1,3 +1,28 @@
+/* ---------------------------------------------
+   AUTH GUARD — Redirect if NOT logged in
+---------------------------------------------- */
+const token = localStorage.getItem("token");
+const fullName = localStorage.getItem("full_name");
+
+if (!token) {
+    window.location.href = "login.html";
+}
+
+// Set greeting text
+const greetEl = document.getElementById("greetUser");
+if (greetEl) greetEl.innerText = `Hello, ${fullName || "User"}!`;
+
+// Logout
+document.getElementById("logoutBtn").addEventListener("click", () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user_email");
+    localStorage.removeItem("user_name");
+    window.location.href = "login.html";
+});
+
+/* ---------------------------------------------
+   ANALYZE BUTTON HANDLER
+---------------------------------------------- */
 document.getElementById("analyzeBtn").addEventListener("click", async () => {
 
   const btn = document.getElementById("analyzeBtn");
@@ -5,47 +30,27 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
   const resultSection = document.getElementById("resultSection");
   const resultPane = document.getElementById("resultPane");
 
-  // Change button state
   btn.innerText = "Analyzing... ⌛";
-  btn.classList.add("loading");
   btn.disabled = true;
 
   const fileInput = document.getElementById("resume");
   const resumeText = document.getElementById("resumeText").value.trim();
   const jobDesc = document.getElementById("jobDesc").value.trim();
 
-  // If job description is empty
   if (!jobDesc) {
-
-      // Only show resultSection; DO NOT hide inputSection
       resultSection.classList.remove("hidden");
-
-      resultPane.innerHTML = `
-          <div class="result-message">
-              ❗ Please enter a job description to continue.
-          </div>
-      `;
-
+      resultPane.innerHTML = "<div class='result-message'>❗ Please enter a job description.</div>";
       resetButton();
       return;
   }
 
-  // If both resume file & resume text are empty
   if (fileInput.files.length === 0 && resumeText.length === 0) {
-
       resultSection.classList.remove("hidden");
-
-      resultPane.innerHTML = `
-          <div class="result-message">
-              ❗ Please upload a resume or paste resume text.
-          </div>
-      `;
-
+      resultPane.innerHTML = "<div class='result-message'>❗ Please upload a resume or paste text.</div>";
       resetButton();
       return;
   }
 
-  // Show loading message
   resultPane.innerHTML = "<p>Analyzing... ⏳</p>";
 
   try {
@@ -58,13 +63,16 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
 
           response = await fetch("http://127.0.0.1:8000/analyze/file", {
               method: "POST",
+              headers: { "Authorization": `Bearer ${token}` },
               body: formData
           });
-      } 
-      else if (resumeText.length > 0) {
+      } else {
           response = await fetch("http://127.0.0.1:8000/analyze/text", {
               method: "POST",
-              headers: { "Content-Type": "application/json" },
+              headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${token}`
+              },
               body: JSON.stringify({
                   resume_text: resumeText,
                   job_description: jobDesc
@@ -76,13 +84,13 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
 
       if (data.error) {
           resultPane.innerHTML = `<p>${data.error}</p>`;
+          resetButton();
           return;
       }
 
       inputSection.classList.add("hidden");
       resultSection.classList.remove("hidden");
 
-      // Output UI
       resultPane.innerHTML = `
         <h3 class="result-title">Resume Analysis Result</h3>
 
@@ -123,9 +131,7 @@ document.getElementById("analyzeBtn").addEventListener("click", async () => {
   }
 
   function resetButton() {
-      const btn = document.getElementById("analyzeBtn");
       btn.innerText = "Analyze";
-      btn.classList.remove("loading");
       btn.disabled = false;
   }
 });

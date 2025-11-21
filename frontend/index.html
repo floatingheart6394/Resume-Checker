@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -6,7 +6,16 @@
   <title>Resume Checker — Candidate View</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
+
+  <!-- TOP HEADER BAR -->
+  <div class="header-bar">
+      <span id="greetUser" class="header-text">Hello!</span>
+      <button id="logoutBtn" class="header-logout">Logout</button>
+  </div>
+
+  <!-- INPUT SECTION -->
   <div id="inputSection" class="card">
     <h2>Resume Checker</h2>
 
@@ -24,10 +33,17 @@
     <button id="analyzeBtn">Analyze</button>
   </div>
 
+  <!-- RESULT SECTION -->
   <div id="resultSection" class="card hidden">
     <div id="resultPane"></div>
   </div>
 
   <script src="script.js"></script>
+
+  <script>
+    const userName = localStorage.getItem("full_name") || "User";
+    document.getElementById("greetUser").innerText = `Hello, ${userName}!`;
+  </script>
+
 </body>
 </html>
